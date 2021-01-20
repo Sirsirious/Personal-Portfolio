@@ -18,29 +18,30 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from ai.ner import load_ner, load_vocabs
 
-app = Flask(__name__)
+dash_app = Flask(__name__)
 
 FONT_AWESOME = "https://use.fontawesome.com/releases/v5.7.2/css/all.css"
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED, dbc.themes.BOOTSTRAP, FONT_AWESOME])
-app.config.suppress_callback_exceptions = True
+dash_app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED, dbc.themes.BOOTSTRAP, FONT_AWESOME])
+app = dash_app.server
+dash_app.config.suppress_callback_exceptions = True
 
 footer = footer_layout()
 
 navbar = navbar_layout()
 
-app.layout = html.Div([
+dash_app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div([navbar, html.Div(id='page-content'), footer]),
 ])
-app.title = "Tiago Duque"
+dash_app.title = "Tiago Duque"
 
 word2idx, idx2word, tags2idx, idx2tags = load_vocabs()
 model = load_ner()
 
 
-@app.callback(Output('page-content', 'children'),
-              [Input('url', 'pathname')])
+@dash_app.callback(Output('page-content', 'children'),
+                   [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/tokenizer':
         return tokenizer_layout()
@@ -60,7 +61,7 @@ def display_page(pathname):
         return homepage_layout()
 
 
-@app.callback(
+@dash_app.callback(
     Output('tokenizer-output', 'children'),
     [Input('tokenizer-input', 'value')]
 )
@@ -69,7 +70,7 @@ def generate_token_list(text):
     return text
 
 
-@app.callback(
+@dash_app.callback(
     Output('stemmer-output', 'children'),
     [Input('stemmer-input', 'value')]
 )
@@ -78,7 +79,7 @@ def generate_stem_list(text):
     return text
 
 
-@app.callback(
+@dash_app.callback(
     Output('tagger-output', 'children'),
     [Input('tagger-input', 'value')]
 )
@@ -87,7 +88,7 @@ def generate_tag_list(text):
     return text
 
 
-@app.callback(
+@dash_app.callback(
     Output('lemma-output', 'children'),
     [Input('lemma-input', 'value')]
 )
@@ -96,7 +97,7 @@ def generate_lemma_list(text):
     return text
 
 
-@app.callback(
+@dash_app.callback(
     Output('ner-output', 'children'),
     [Input('ner-input', 'value'),
      Input('ner-button', 'n_clicks')]
@@ -110,4 +111,4 @@ def generate_ner_list(text, n_clicks):
             return str(e)
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    dash_app.run_server(debug=False)
