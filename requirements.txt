@@ -1,4 +1,5 @@
 cachetools==4.2.0
+brotli~=1.0.6
 dash==1.18.1
 dash-bootstrap-components==0.10.7
 dash-core-components==1.14.1
