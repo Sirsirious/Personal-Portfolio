@@ -3,7 +3,7 @@ steps:
   entrypoint: python3
   args: ['-m', 'pip', 'install', '-t', '.', '-r', 'requirements.txt']
 - name: 'python'
-  args: ['python3','pytest']
+  args: ['python3','-m','pytest']
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
 timeout: "1600s"
