@@ -11,5 +11,6 @@ ENV PORT 8050
 
 WORKDIR /app
 
+RUN pytest
 # Use gunicorn as the entrypoint
 CMD exec gunicorn --bind :$PORT main:app --workers 1 --threads 1 --timeout 60
